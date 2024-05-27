@@ -1,0 +1,83 @@
+using BepInEx.Logging;
+using BepInEx.Unity.IL2CPP.Utils.Collections;
+using KindredPortals.Services;
+using ProjectM;
+using ProjectM.Physics;
+using ProjectM.Scripting;
+using ProjectM.Terrain;
+using System.Collections;
+using System.Runtime.CompilerServices;
+using Unity.Entities;
+using UnityEngine;
+
+namespace KindredPortals;
+
+internal static class Core
+{
+	public static World Server { get; } = GetWorld("Server") ?? throw new System.Exception("There is no Server world (yet). Did you install a server mod on the client?");
+
+	public static EntityManager EntityManager { get; } = Server.EntityManager;
+    public static ChunkObjectManager ChunkObjectManager { get; } = Server.GetExistingSystemManaged<ChunkObjectManager>();
+    public static PrefabCollectionSystem PrefabCollection { get; } = Server.GetExistingSystemManaged<PrefabCollectionSystem>();
+    public static ServerScriptMapper ServerScriptMapper { get; internal set; }
+    public static double ServerTime => ServerGameManager.ServerTime;
+    public static ServerGameManager ServerGameManager => ServerScriptMapper.GetServerGameManager();
+	public static ManualLogSource Log { get; } = Plugin.LogInstance;
+
+    public static PortalService PortalService { get; internal set; }
+
+    static MonoBehaviour monoBehaviour;
+
+    public static void LogException(System.Exception e, [CallerMemberName] string caller = null)
+	{
+		Core.Log.LogError($"Failure in {caller}\nMessage: {e.Message} Inner:{e.InnerException?.Message}\n\nStack: {e.StackTrace}\nInner Stack: {e.InnerException?.StackTrace}");
+	}
+
+	internal static void InitializeAfterLoaded()
+	{
+		if (_hasInitialized) return;
+
+        ServerScriptMapper = Server.GetExistingSystemManaged<ServerScriptMapper>();
+
+        PortalService = new PortalService();
+
+        _hasInitialized = true;
+		Log.LogInfo($"{nameof(InitializeAfterLoaded)} completed");
+	}
+	private static bool _hasInitialized = false;
+
+	private static World GetWorld(string name)
+	{
+		foreach (var world in World.s_AllWorlds)
+		{
+			if (world.Name == name)
+			{
+				return world;
+			}
+		}
+
+		return null;
+    }
+
+    public static Coroutine StartCoroutine(IEnumerator routine)
+    {
+        if (monoBehaviour == null)
+        {
+            var go = new GameObject("KindredExtract");
+            monoBehaviour = go.AddComponent<IgnorePhysicsDebugSystem>();
+            Object.DontDestroyOnLoad(go);
+        }
+
+        return monoBehaviour.StartCoroutine(routine.WrapToIl2Cpp());
+    }
+
+    public static void StopCoroutine(Coroutine coroutine)
+    {
+        if (monoBehaviour == null)
+        {
+            return;
+        }
+
+        monoBehaviour.StopCoroutine(coroutine);
+    }
+}

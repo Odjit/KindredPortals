@@ -29,7 +29,7 @@ static class RegisterSpawnedChunkObjectsSystem_ReactToSpawnPatch
                     portalData.initialList = portalDataList;
                 }
 
-                portalData.additions = new();
+                portalData.additions = [];
                 data.Add(chunkPortal.FromChunk, portalData);
             }
 
@@ -60,11 +60,19 @@ static class RegisterSpawnedChunkObjectsSystem_ReactToSpawnPatch
             if (largestIndex >= portalDataList.Length)
                 portalDataList.length = (ushort)(largestIndex + 1);
 
-            foreach(var (index, data) in additions)
+            foreach (var (index, data) in additions)
+            {
                 portalDataList[index] = data;
+
+                // Save it back out
+                var chunkPortal = data.PortalEntity.Read<ChunkPortal>();
+                chunkPortal.FromChunkPortalIndex = index;
+                data.PortalEntity.Write(chunkPortal);
+            }
 
             Core.ChunkObjectManager._ChunkPortals.Remove(chunk);
             Core.ChunkObjectManager._ChunkPortals.Add(chunk, portalDataList);
+
         }
     }
 }

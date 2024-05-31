@@ -40,7 +40,7 @@ class RegisterSpawnedChunkObjectsSystem_PersistenceLoadPatch
         {
             if(!Core.ChunkObjectManager._ChunkPortals.TryGetValue(chunkPortal.FromChunk, out var portalDataList))
             {
-                Core.Log.LogInfo($"Missing portalData for chunk {chunkPortal.FromChunk}");
+                Core.Log.LogError($"Missing portalData for chunk {chunkPortal.FromChunk}");
                 continue;
             }
 

@@ -1,5 +1,6 @@
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
+using KindredPortals.Commands.Converters;
 using KindredPortals.Services;
 using ProjectM;
 using ProjectM.Physics;
@@ -24,7 +25,7 @@ internal static class Core
     public static ServerGameManager ServerGameManager => ServerScriptMapper.GetServerGameManager();
 	public static ManualLogSource Log { get; } = Plugin.LogInstance;
 
-    public static PortalService PortalService { get; internal set; }
+    public static PortalService PortalService { get; } = new();
 
     static MonoBehaviour monoBehaviour;
 
@@ -38,8 +39,7 @@ internal static class Core
 		if (_hasInitialized) return;
 
         ServerScriptMapper = Server.GetExistingSystemManaged<ServerScriptMapper>();
-
-        PortalService = new PortalService();
+        FoundMapIconConverter.Initialize();
 
         _hasInitialized = true;
 		Log.LogInfo($"{nameof(InitializeAfterLoaded)} completed");

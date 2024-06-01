@@ -26,6 +26,7 @@ internal static class Core
 	public static ManualLogSource Log { get; } = Plugin.LogInstance;
 
     public static PortalService PortalService { get; } = new();
+    public static WaygateService WaygateService { get; internal set; }
 
     static MonoBehaviour monoBehaviour;
 
@@ -40,6 +41,9 @@ internal static class Core
 
         ServerScriptMapper = Server.GetExistingSystemManaged<ServerScriptMapper>();
         FoundMapIconConverter.Initialize();
+        FoundWaygatePrefabConverter.Initialize();
+
+        WaygateService = new();
 
         _hasInitialized = true;
 		Log.LogInfo($"{nameof(InitializeAfterLoaded)} completed");

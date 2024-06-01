@@ -1,9 +1,12 @@
 using Il2CppInterop.Runtime;
 using ProjectM;
+using ProjectM.Terrain;
 using Stunlock.Core;
 using System;
 using System.Runtime.InteropServices;
 using Unity.Entities;
+using Unity.Mathematics;
+using Unity.Transforms;
 
 namespace KindredPortals;
 
@@ -86,6 +89,17 @@ public static class ECSExtensions
     {
         var ct = new ComponentType(Il2CppType.Of<T>());
         EntityManager.RemoveComponent(entity, ct);
+    }
+
+    public static TerrainChunk GetChunk(this Entity entity)
+    {
+        var pos = entity.Read<Translation>().Value;
+        return pos.GetChunk();
+    }
+
+    public static TerrainChunk GetChunk(this float3 pos)
+    {
+        return new TerrainChunk { X = (sbyte)((pos.x + 3200) / 160), Y = (sbyte)((pos.z + 3200) / 160) };
     }
 }
 

@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>KindredPortals</AssemblyName>
-    <Description>Created with VRising.ModTemplate, you should edit this.</Description>
+    <Description>Expand your V Rising fast travel options.</Description>
     <Version>0.1.10</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>

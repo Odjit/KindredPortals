@@ -6,6 +6,7 @@ using ProjectM;
 using ProjectM.Physics;
 using ProjectM.Scripting;
 using ProjectM.Terrain;
+using Stunlock.Localization;
 using System.Collections;
 using System.Runtime.CompilerServices;
 using Unity.Entities;
@@ -25,6 +26,8 @@ internal static class Core
     public static ServerGameManager ServerGameManager => ServerScriptMapper.GetServerGameManager();
 	public static ManualLogSource Log { get; } = Plugin.LogInstance;
 
+    public static LocalizationService LocalizationService { get; } = new();
+    public static MapIconService MapIconService { get; internal set; }
     public static PortalService PortalService { get; } = new();
     public static WaygateService WaygateService { get; internal set; }
 
@@ -43,6 +46,7 @@ internal static class Core
         FoundMapIconConverter.Initialize();
         FoundWaygatePrefabConverter.Initialize();
 
+        MapIconService = new();
         WaygateService = new();
 
         _hasInitialized = true;

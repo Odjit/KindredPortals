@@ -151,11 +151,32 @@ class PortalService
         var connectedPortal = GetConnectedPortal(closestChunkPortal);
 
         RemovePortalEntry(closestChunkPortal);
+        if (closestPortal.Has<AttachedBuffer>())
+        {
+            var attachedBuffer = Core.EntityManager.GetBuffer<AttachedBuffer>(closestPortal);
+            for (var i = 0; i < attachedBuffer.Length; i++)
+            {
+                var attachedEntity = attachedBuffer[i].Entity;
+                if (attachedEntity == Entity.Null) continue;
+                Core.EntityManager.DestroyEntity(attachedEntity);
+            }
+        }
         Core.EntityManager.DestroyEntity(closestPortal);
 
         if (connectedPortal != Entity.Null)
         {
             RemovePortalEntry(connectedPortal.Read<ChunkPortal>());
+
+            if (connectedPortal.Has<AttachedBuffer>())
+            {
+                var attachedBuffer = Core.EntityManager.GetBuffer<AttachedBuffer>(connectedPortal);
+                for (var i = 0; i < attachedBuffer.Length; i++)
+                {
+                    var attachedEntity = attachedBuffer[i].Entity;
+                    if (attachedEntity == Entity.Null) continue;
+                    Core.EntityManager.DestroyEntity(attachedEntity);
+                }
+            }
             Core.EntityManager.DestroyEntity(connectedPortal);
         }
         return true;

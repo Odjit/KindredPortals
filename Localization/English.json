@@ -1,0 +1,329 @@
+{
+  "Codes": [],
+  "Nodes": [
+    {
+      "Guid": "35732835-3ae0-4f7e-8adb-1a7ba1e1b3d3",
+      "Text": "Anvil"
+    },
+    {
+      "Guid": "ee2b6a64-6c77-4f8a-906b-246d926b9c0a",
+      "Text": "Altar of Recollection"
+    },
+    {
+      "Guid": "531e1fb9-a11a-41cd-9149-3b292c6361db",
+      "Text": "Castle Heart"
+    },
+    {
+      "Guid": "30afdc89-bb20-4913-89d9-dfbed3639a74",
+      "Text": "Workbench"
+    },
+    {
+      "Guid": "f97ad270-946c-47b5-97b7-17f486bb4187",
+      "Text": "Unnamed"
+    },
+    {
+      "Guid": "8a8bdb9a-1f67-4062-8fcd-99d80e9b217f",
+      "Text": "Artisan Table"
+    },
+    {
+      "Guid": "c1bb3647-d5ae-4cd9-91c6-8df8342c870b",
+      "Text": "Research Desk"
+    },
+    {
+      "Guid": "1320cca5-cb66-495b-987f-c187b2af3078",
+      "Text": "Tailoring Bench"
+    },
+    {
+      "Guid": "b3e1698e-5a39-4ba4-86c5-6d4b3ff5ec32",
+      "Text": "Castle Waygate"
+    },
+    {
+      "Guid": "5336ed66-0eb9-419f-9979-74c40df9f1a3",
+      "Text": "Cave Passage"
+    },
+    {
+      "Guid": "b18f5916-50d1-4140-9629-3af071fcfb36",
+      "Text": "Tomb"
+    },
+    {
+      "Guid": "42d5b7c6-cbeb-40fb-ac28-e16fda4243f5",
+      "Text": "Your dropped loot"
+    },
+    {
+      "Guid": "f4e6e26a-7ff4-4b9d-b714-aaa2a67c25f3",
+      "Text": "Dracula\u0027s Castle"
+    },
+    {
+      "Guid": "2414ac41-88e5-480e-a3af-d2686773b056",
+      "Text": "Contested"
+    },
+    {
+      "Guid": "6b11e2ef-c7d7-4d9e-ab56-a29843279188",
+      "Text": "Exit"
+    },
+    {
+      "Guid": "97246fbe-4a67-40a9-bf33-df3caf89c686",
+      "Text": "No Name"
+    },
+    {
+      "Guid": "15a7ed37-4c0e-4127-baa9-fa3d22ef0e9b",
+      "Text": "Bandit Camp"
+    },
+    {
+      "Guid": "f4e05445-6d3f-42ed-9244-328746f56bd6",
+      "Text": "General"
+    },
+    {
+      "Guid": "44f8b6e9-2f95-4abd-b5aa-dcaf53669c03",
+      "Text": "Bandit Encampment"
+    },
+    {
+      "Guid": "52abb4e0-e801-48cf-ae0d-315acc90cde4",
+      "Text": "Rogue Garrison"
+    },
+    {
+      "Guid": "7df13546-6c91-48ea-8e9a-6b8142b4cfb5",
+      "Text": "Blacksmith"
+    },
+    {
+      "Guid": "14193291-22b3-4279-9bd9-00307ce38004",
+      "Text": "Bandit Hideout"
+    },
+    {
+      "Guid": "a46cc3d1-1670-48fb-ab2f-520a42a06125",
+      "Text": "Tailoring"
+    },
+    {
+      "Guid": "77d13af5-2327-4d6c-a531-0e37671a71ab",
+      "Text": "Bandit Outpost"
+    },
+    {
+      "Guid": "a64d2e61-91ce-4567-8ce8-d80815feb8e5",
+      "Text": "Scoundrel\u0027s Outpost"
+    },
+    {
+      "Guid": "48472153-31a2-4ece-b68e-e8fd04b808eb",
+      "Text": "Bear Cave"
+    },
+    {
+      "Guid": "5fb3b7fd-385b-41e6-8f18-8ff024c8fbf9",
+      "Text": "Commander\u0027s Outpost"
+    },
+    {
+      "Guid": "3f009965-8479-436c-8fcd-b53e7d54ee84",
+      "Text": "Spider Queen Gorge"
+    },
+    {
+      "Guid": "58cfb2ed-63bc-4cbb-b14d-ba8c0b5763fa",
+      "Text": "Cursed Ruin of Vek\u0027Zar"
+    },
+    {
+      "Guid": "c7112238-57d3-4c3a-842a-d5d31e49c0df",
+      "Text": "Magic"
+    },
+    {
+      "Guid": "e949d0ea-915f-4d97-9300-e82e1ba673c6",
+      "Text": "Vallynden Church"
+    },
+    {
+      "Guid": "56ca7db0-cf66-43bc-b5e1-3aad075baad3",
+      "Text": "Cotton Plantation"
+    },
+    {
+      "Guid": "2a65cc6d-fc16-49e1-b88f-dfe081634063",
+      "Text": "Crypt Vault"
+    },
+    {
+      "Guid": "ba4b3b3d-c5b5-4a32-a940-97187c0b9361",
+      "Text": "Cultist Summoning Site"
+    },
+    {
+      "Guid": "afee637e-0df4-4719-bbf4-77f5f086dd73",
+      "Text": "Dunley Monastery"
+    },
+    {
+      "Guid": "f80d1d97-caea-4eac-a028-1834dae25844",
+      "Text": "Farm"
+    },
+    {
+      "Guid": "a24cb149-4f5c-47f0-862b-e5819664f4dd",
+      "Text": "Garlic Farm"
+    },
+    {
+      "Guid": "4b409594-b375-49c3-bff3-d9847c5db7e9",
+      "Text": "Horse Farm"
+    },
+    {
+      "Guid": "99d39bf1-9644-4a53-b6c1-0b8fc298432b",
+      "Text": "Town of Vallynden"
+    },
+    {
+      "Guid": "e2aaf367-924b-4017-8491-0bb03f47b6cc",
+      "Text": "Forgotten Cemetery"
+    },
+    {
+      "Guid": "e86b9574-f3b0-40c6-89e1-ff2251b04382",
+      "Text": "Ghost Town"
+    },
+    {
+      "Guid": "8cd9a2c1-ddcf-4671-ac5d-ccce844c88d1",
+      "Text": "Graveyard"
+    },
+    {
+      "Guid": "8042a377-6273-4176-90a5-612666885832",
+      "Text": "Infested Mine"
+    },
+    {
+      "Guid": "81d60b11-567d-40a9-8b68-5ecdd6bef7c7",
+      "Text": "Resource Zone"
+    },
+    {
+      "Guid": "e7ed7111-1e29-402a-a127-8b972c498748",
+      "Text": "Haunted Iron Mine"
+    },
+    {
+      "Guid": "ed395c27-4d31-4943-ac41-d5bf02b59a24",
+      "Text": "Lumberjack Camp"
+    },
+    {
+      "Guid": "b466c687-3a66-45d6-98b3-34470b529552",
+      "Text": "Merchant"
+    },
+    {
+      "Guid": "18c9d162-8bc9-4467-8482-b3559755ab4a",
+      "Text": "Militia Camp"
+    },
+    {
+      "Guid": "174d07a8-ca74-4bca-8fb3-58cf8c0c54d2",
+      "Text": "Militia Encampment"
+    },
+    {
+      "Guid": "eba7616b-894b-4106-a537-5217c086f0e2",
+      "Text": "Bastion of Dunley"
+    },
+    {
+      "Guid": "2c8488a0-c7e9-49b5-a83c-c1a51b2ee7bb",
+      "Text": "A small militia camp holding only a limited amount of supplies."
+    },
+    {
+      "Guid": "0318de6c-5956-4789-8d4a-9a6913b5e113",
+      "Text": "Spider Forest"
+    },
+    {
+      "Guid": "1f30c16d-55b6-478c-a6f5-6f036514a7cb",
+      "Text": "Teroki Meadows"
+    },
+    {
+      "Guid": "e5d523fe-77c0-4c9b-9de5-3a80f2b98dd4",
+      "Text": "Unknown"
+    },
+    {
+      "Guid": "7bb457e3-7b9d-4de6-8da5-c9f440ea4dae",
+      "Text": "Wolf Den"
+    },
+    {
+      "Guid": "a7c0a8dc-c899-474a-bfe7-36beac7a369b",
+      "Text": "Church of the Holy Order IV"
+    },
+    {
+      "Guid": "97782faa-ab76-4e20-b355-6129bbd122e4",
+      "Text": "Knowledge Zone"
+    },
+    {
+      "Guid": "4c9bcf15-996c-4ef5-8088-a308033317b8",
+      "Text": "Infested Coal Mine III"
+    },
+    {
+      "Guid": "33491730-b176-4cfa-9bf0-59902b792730",
+      "Text": "Bandit Copper Quarry"
+    },
+    {
+      "Guid": "e0c556be-cb1c-4383-bb9e-8e19a07b43ec",
+      "Text": "Duskbark Forest I"
+    },
+    {
+      "Guid": "7f74d8c6-a4c6-4065-850f-f060d562fdcd",
+      "Text": "Grizzly Bear Den III"
+    },
+    {
+      "Guid": "c7020775-71e8-4125-bcde-4d9636e1b62d",
+      "Text": "Bedrock Pass"
+    },
+    {
+      "Guid": "f2eabec3-3247-483c-8c75-09ccdbcc0d1e",
+      "Text": "Construction"
+    },
+    {
+      "Guid": "95a0ecd0-1803-4216-be17-ee065c9b937b",
+      "Text": "Infested Quartz Mine II"
+    },
+    {
+      "Guid": "3c850b30-3067-464e-9bb7-6770e901f3ef",
+      "Text": "Quartz Quarry II"
+    },
+    {
+      "Guid": "a8df91b3-80ae-48fe-b7c9-f19be80e7e25",
+      "Text": "Saint Lily\u0027s Cemetery II"
+    },
+    {
+      "Guid": "94da3604-bce9-4975-b62a-dae8409b9f58",
+      "Text": "Snow Blossom Forest I"
+    },
+    {
+      "Guid": "0896f140-8c61-451a-9531-a2cd2905a4c5",
+      "Text": "Vampire Waygate"
+    },
+    {
+      "Guid": "c0c03f58-45ba-4ee9-b337-6a384d4b5c0e",
+      "Text": "V Blood Source"
+    },
+    {
+      "Guid": "4459b281-64c0-468a-8534-a3e4fb768973",
+      "Text": "By acquiring and placing a Soul Shard within your castle you can claim its power"
+    },
+    {
+      "Guid": "e2fcee98-60ca-462e-98e6-45278ca603f6",
+      "Text": "Soul Shard of Dracula"
+    },
+    {
+      "Guid": "ad330dd2-1c52-49db-91ac-81a808347b8e",
+      "Text": "Soul Shard of Solarus"
+    },
+    {
+      "Guid": "6029af38-711d-4550-b572-64075b574feb",
+      "Text": "Soul Shard of the Monster"
+    },
+    {
+      "Guid": "a7e02b2f-4171-4257-9148-32387cbff763",
+      "Text": "Soul Shard of the Winged Horror"
+    },
+    {
+      "Guid": "49eecac8-e9d0-4878-8b5a-dd03fb3f0145",
+      "Text": "Siege Golem"
+    },
+    {
+      "Guid": "81f1bc66-2351-47dc-a0bd-ff9c2f152c6d",
+      "Text": "A Siege Golem is being summoned at this location."
+    },
+    {
+      "Guid": "29a3f5f2-4abb-49de-9743-cffe65f2013e",
+      "Text": "Exit"
+    },
+    {
+      "Guid": "4a519e2f-4667-4921-8959-f73af3cbe9fa",
+      "Text": "Stone Coffin"
+    },
+    {
+      "Guid": "659c540e-da33-430b-ad8f-e33ef31cfdd9",
+      "Text": "Viable Castle Location"
+    },
+    {
+      "Guid": "2df68eef-f6d0-449a-8c5a-7f60d161ba54",
+      "Text": "Wooden Coffin"
+    },
+    {
+      "Guid": "627c63df-7f72-47d0-8b83-c92d31b6fdef",
+      "Text": "Vampire Waygate"
+    }
+  ]
+}

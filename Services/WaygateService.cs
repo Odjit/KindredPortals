@@ -76,6 +76,16 @@ class WaygateService
                 unlockedSpawnedWaypoints[userEntity].Add(foundWaypoint[0]);
             }
         }
+
+        if (Core.ServerGameSettingsSystem.Settings.AllWaypointsUnlocked)
+        {
+            foreach (var waygate in spawnedWaygates)
+            {
+                if (unlockedSpawnedWaypoints[userEntity].Contains(waygate)) continue;
+                unlockedSpawnedWaypoints[userEntity].Add(waygate);
+                unlockedWaypoints.Add(new() { Waypoint = waygate.Read<NetworkId>() });
+            }
+        }
     }
 
     public bool CreateWaygate(Entity character, PrefabGUID waypointPrefabGUID)
@@ -159,14 +169,21 @@ class WaygateService
             {
                 var user = userEntity.Read<User>();
                 var characterEntity = user.LocalCharacter.GetEntityOnServer();
-                var pos = characterEntity.Read<Translation>().Value;
 
+                if (characterEntity == Entity.Null) continue;
 
-                if (!unlockedSpawnedWaypoints.TryGetValue(userEntity, out var unlockedWaypoints))
+                if (!unlockedSpawnedWaypoints.TryGetValue(userEntity, out var _))
                 {
                     InitializeUnlockedWaypoints(userEntity);
                 }
 
+                if (Core.ServerGameSettingsSystem.Settings.AllWaypointsUnlocked)
+                {
+                    yield return timeBetweenChecks;
+                    continue;
+                }
+
+                var pos = characterEntity.Read<Translation>().Value;
                 foreach (var waygate in spawnedWaygates)
                 {
                     if (unlockedSpawnedWaypoints[userEntity].Contains(waygate)) continue;

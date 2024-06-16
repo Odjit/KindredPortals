@@ -12,9 +12,11 @@
     <InformationalVersion>0.1.10+1.Branch.main.Sha.c33d0879382e1a0da34861ec55914ba7e637a80e</InformationalVersion>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="LICENSE" />
     <None Remove="Localization\English.json" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="LICENSE" />
     <EmbeddedResource Include="Localization\English.json" />
   </ItemGroup>
   <ItemGroup>

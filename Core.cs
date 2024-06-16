@@ -21,6 +21,7 @@ internal static class Core
 	public static EntityManager EntityManager { get; } = Server.EntityManager;
     public static ChunkObjectManager ChunkObjectManager { get; } = Server.GetExistingSystemManaged<ChunkObjectManager>();
     public static PrefabCollectionSystem PrefabCollection { get; } = Server.GetExistingSystemManaged<PrefabCollectionSystem>();
+    public static ServerGameSettingsSystem ServerGameSettingsSystem { get; internal set; }
     public static ServerScriptMapper ServerScriptMapper { get; internal set; }
     public static double ServerTime => ServerGameManager.ServerTime;
     public static ServerGameManager ServerGameManager => ServerScriptMapper.GetServerGameManager();
@@ -42,7 +43,9 @@ internal static class Core
 	{
 		if (_hasInitialized) return;
 
+        ServerGameSettingsSystem = Server.GetExistingSystemManaged<ServerGameSettingsSystem>();
         ServerScriptMapper = Server.GetExistingSystemManaged<ServerScriptMapper>();
+
         FoundMapIconConverter.Initialize();
         FoundWaygatePrefabConverter.Initialize();
 

@@ -53,7 +53,7 @@ internal static class Core
         WaygateService = new();
 
         _hasInitialized = true;
-		Log.LogInfo($"{nameof(InitializeAfterLoaded)} completed");
+		Log.LogInfo($"KindredPortals initialized");
 	}
 	private static bool _hasInitialized = false;
 

@@ -1,9 +1,7 @@
 ﻿using ProjectM;
 using ProjectM.Network;
 using ProjectM.Shared;
-using ProjectM.Terrain;
 using Stunlock.Core;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -103,6 +101,8 @@ class WaygateService
         {
             foreach (var waypoint in waypoints)
             {
+                if (waypoint.Has<CastleWorkstation>())
+                    continue;
                 if (waypoint.GetChunk() == chunk)
                     return false;
             }

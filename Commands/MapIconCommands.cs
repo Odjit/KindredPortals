@@ -1,10 +1,6 @@
 ﻿using KindredPortals.Commands.Converters;
 using ProjectM;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using VampireCommandFramework;
 
 namespace KindredPortals.Commands;
@@ -33,7 +29,7 @@ class MapIconCommands
     {
         var sb = new StringBuilder();
         sb.AppendLine("Map Icons:");
-        foreach (var (prefabGUID, name) in Core.PrefabCollection._PrefabGuidToNameDictionary)
+        foreach (var (name, prefabGUID) in FoundMapIconConverter.MapIconNames)
         {
             if (!name.StartsWith("MapIcon_"))
                 continue;

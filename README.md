@@ -8,9 +8,9 @@ MapIcons: Some require attachment to an object to be seen (like a portal), other
 
 
 Notes: 
-- Portals are limited to 8 per chunk. Waygates are limited to 1 per chunk. Chunks are approx 160x160 coordinate points / 32x32 tiles. (5 coordinates = 1 tile)
+- Portals are limited to 8 per chunk. Waygates are limited to 1 per chunk. Chunks are 160x160 coordinate points / 32x32 tiles. (5 coordinates = 1 tile) [Map](https://i.imgur.com/UBmjxdG.jpeg)
 - Waygates cannot be seen in the "inky black" of the map. It covers up the mapicons.
-- Portals are best for travel into the "inky black" as they do not involve the map for use.
+- Portals are best for travel into the "inky black" as they do not involve the map for use. (Like Dev Island! `teleporttochunk 7,2`)
 - If you destroy a waygate, it will be removed from the map for all players immediately
 - If you destroy a portal, it will be removed from use, but the text will remain to players until they relog.
 

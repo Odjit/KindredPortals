@@ -67,6 +67,8 @@ class PortalService
         var endRot = playerEntity.Read<Rotation>().Value;
         CreatePortal(playerEntity, endPos, endRot, endChunk, endIndex, endMapIcon, start.chunk, start.index);
 
+        portalStartPos.Remove(playerEntity);
+
         Core.Log.LogInfo($"Start: {start.chunk} {start.index} End: {endChunk} {endIndex}");
         return null;
     }

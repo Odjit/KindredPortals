@@ -62,6 +62,9 @@ static class RegisterSpawnedChunkObjectsSystem_ReactToSpawnPatch
 
             foreach (var (index, data) in additions)
             {
+                if (!data.PortalEntity.Has<ChunkPortal>())
+                    continue;
+
                 portalDataList[index] = data;
 
                 // Save it back out
@@ -72,7 +75,6 @@ static class RegisterSpawnedChunkObjectsSystem_ReactToSpawnPatch
 
             Core.ChunkObjectManager._ChunkPortals.Remove(chunk);
             Core.ChunkObjectManager._ChunkPortals.Add(chunk, portalDataList);
-
         }
     }
 }

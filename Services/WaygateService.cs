@@ -17,13 +17,13 @@ class WaygateService
     const float UnlockDistance = 25f;
     readonly EntityQuery connectedUserQuery;
     readonly EntityQuery waypointQuery;
+    readonly EntityQuery spawnedWaypointQuery;
 
-    readonly List<Entity> spawnedWaygates = [];
-    readonly Dictionary<Entity, List<Entity>> unlockedSpawnedWaypoints = [];
+    readonly Dictionary<Entity, List<NetworkId>> unlockedSpawnedWaypoints = [];
 
     public WaygateService()
     {
-        var spawnedWaypointQuery = Core.EntityManager.CreateEntityQuery(new EntityQueryDesc()
+        spawnedWaypointQuery = Core.EntityManager.CreateEntityQuery(new EntityQueryDesc()
         {
             All = new ComponentType[] {
                 ComponentType.ReadOnly<SpawnedBy>(),
@@ -32,30 +32,16 @@ class WaygateService
             Options = EntityQueryOptions.IncludeDisabled
         });
 
-        var entities = spawnedWaypointQuery.ToEntityArray(Allocator.Temp);
-        foreach (var entity in entities)
-        {
-            spawnedWaygates.Add(entity);
-        }
-        entities.Dispose();
-        spawnedWaypointQuery.Dispose();
-
         connectedUserQuery = Core.EntityManager.CreateEntityQuery(new ComponentType[]
         {
             ComponentType.ReadOnly<IsConnected>(),
             ComponentType.ReadOnly<User>()
         });
 
-        entities = connectedUserQuery.ToEntityArray(Allocator.Temp);
-        foreach (var userEntity in entities)
+        waypointQuery = Core.EntityManager.CreateEntityQuery(new EntityQueryDesc()
         {
-            InitializeUnlockedWaypoints(userEntity);
-        }
-        entities.Dispose();
-
-        waypointQuery = Core.EntityManager.CreateEntityQuery(new ComponentType[]
-        {
-            ComponentType.ReadOnly<ChunkWaypoint>(),
+            All = new ComponentType[] { ComponentType.ReadOnly<ChunkWaypoint>() },
+            Options = EntityQueryOptions.IncludeDisabled
         });
 
         Core.StartCoroutine(CheckForWaypointUnlocks());
@@ -66,22 +52,26 @@ class WaygateService
         unlockedSpawnedWaypoints.Add(userEntity, []);
 
         var unlockedWaypoints = Core.EntityManager.GetBuffer<UnlockedWaypointElement>(userEntity);
+        var spawnedWaypoints = spawnedWaypointQuery.ToEntityArray(Allocator.Temp);
+        var spawnedWaypointsArray = spawnedWaypoints.ToArray();
+        spawnedWaypoints.Dispose();
+
         foreach (var waypoint in unlockedWaypoints)
         {
-            var foundWaypoint = spawnedWaygates.Where(x => x.Read<NetworkId>() == waypoint.Waypoint).ToArray();
-            if (foundWaypoint.Length > 0)
+            if (spawnedWaypointsArray.Any(x => x.Read<NetworkId>() == waypoint.Waypoint))
             {
-                unlockedSpawnedWaypoints[userEntity].Add(foundWaypoint[0]);
+                unlockedSpawnedWaypoints[userEntity].Add(waypoint.Waypoint);
             }
         }
 
         if (Core.ServerGameSettingsSystem.Settings.AllWaypointsUnlocked)
         {
-            foreach (var waygate in spawnedWaygates)
+            foreach (var waygate in spawnedWaypointsArray)
             {
-                if (unlockedSpawnedWaypoints[userEntity].Contains(waygate)) continue;
-                unlockedSpawnedWaypoints[userEntity].Add(waygate);
-                unlockedWaypoints.Add(new() { Waypoint = waygate.Read<NetworkId>() });
+                var networkId = waygate.Read<NetworkId>();
+                if (unlockedSpawnedWaypoints[userEntity].Contains(networkId)) continue;
+                unlockedSpawnedWaypoints[userEntity].Add(networkId);
+                unlockedWaypoints.Add(new() { Waypoint = networkId });
             }
         }
     }
@@ -120,15 +110,23 @@ class WaygateService
         newWaypoint.Write(new Rotation { Value = rot });
         newWaypoint.Add<SpawnedBy>();
         newWaypoint.Write(new SpawnedBy { Value = character });
-        
-        spawnedWaygates.Add(newWaypoint);        
+
+        if (Core.ServerGameSettingsSystem.Settings.AllWaypointsUnlocked)
+        {
+            foreach(var userEntity in unlockedSpawnedWaypoints.Keys)
+            {
+                UnlockWaypoint(userEntity, newWaypoint.Read<NetworkId>());
+            }
+        }
         return true;
     }
 
     public bool TeleportToClosestWaygate(Entity character)
     {
         var pos = character.Read<Translation>().Value;
-        var closestWaypoint = spawnedWaygates.OrderBy(x => math.distance(pos, x.Read<Translation>().Value)).FirstOrDefault();
+        var spawnedWaypoints = spawnedWaypointQuery.ToEntityArray(Allocator.Temp);
+        var closestWaypoint = spawnedWaypoints.ToArray().OrderBy(x => math.distance(pos, x.Read<Translation>().Value)).FirstOrDefault();
+        spawnedWaypoints.Dispose();
         if (closestWaypoint == Entity.Null) return false;
 
         var waypointPos = closestWaypoint.Read<Translation>().Value;
@@ -140,23 +138,22 @@ class WaygateService
         return true;
     }
 
-    public void UnlockWaypoint(Entity userEntity, Entity waypoint)
+    public void UnlockWaypoint(Entity userEntity, NetworkId waypointNetworkId)
     {
         if (!unlockedSpawnedWaypoints.TryGetValue(userEntity, out var unlockedWaypoints))
         {
             InitializeUnlockedWaypoints(userEntity);
         }
-        unlockedWaypoints.Add(waypoint);
-        var unlockedWaypointElements = Core.EntityManager.GetBuffer<UnlockedWaypointElement>(userEntity);
+        unlockedWaypoints.Add(waypointNetworkId);
 
         // Verify it wasn't unlocked via some other mean
-        var waypointNetworkId = waypoint.Read<NetworkId>();
-        foreach(var unlockedWaypoint in unlockedWaypointElements)
+        var unlockedWaypointElements = Core.EntityManager.GetBuffer<UnlockedWaypointElement>(userEntity);
+        foreach (var unlockedWaypoint in unlockedWaypointElements)
         {
             if (unlockedWaypoint.Waypoint == waypointNetworkId) return;
         }
 
-        unlockedWaypointElements.Add(new() { Waypoint = waypoint.Read<NetworkId>() });
+        unlockedWaypointElements.Add(new() { Waypoint = waypointNetworkId });
     }
 
     IEnumerator CheckForWaypointUnlocks()
@@ -164,14 +161,19 @@ class WaygateService
         var timeBetweenChecks = new WaitForSeconds(0.1f);
         while (true)
         {
+            yield return timeBetweenChecks;
+            var spawnedWaygates = spawnedWaypointQuery.ToEntityArray(Allocator.Temp);
+
+            if (spawnedWaygates.Length == 0)
+            {
+                spawnedWaygates.Dispose();
+                continue;
+            }
+
             var connectedUsers = connectedUserQuery.ToEntityArray(Allocator.Temp);
             foreach (var userEntity in connectedUsers)
             {
                 var user = userEntity.Read<User>();
-                var characterEntity = user.LocalCharacter.GetEntityOnServer();
-
-                if (characterEntity == Entity.Null) continue;
-
                 if (!unlockedSpawnedWaypoints.TryGetValue(userEntity, out var _))
                 {
                     InitializeUnlockedWaypoints(userEntity);
@@ -179,24 +181,28 @@ class WaygateService
 
                 if (Core.ServerGameSettingsSystem.Settings.AllWaypointsUnlocked)
                 {
-                    yield return timeBetweenChecks;
                     continue;
                 }
+                
+                var characterEntity = user.LocalCharacter.GetEntityOnServer();
+                if (characterEntity == Entity.Null) continue;
 
                 var pos = characterEntity.Read<Translation>().Value;
                 foreach (var waygate in spawnedWaygates)
                 {
-                    if (unlockedSpawnedWaypoints[userEntity].Contains(waygate)) continue;
+                    var waygateNetworkId = waygate.Read<NetworkId>();
+                    if (unlockedSpawnedWaypoints[userEntity].Contains(waygateNetworkId)) continue;
 
                     var waypointPos = waygate.Read<Translation>().Value;
                     if (math.distance(pos, waypointPos) < UnlockDistance)
                     {
-                        UnlockWaypoint(userEntity, waygate);
+                        UnlockWaypoint(userEntity, waygateNetworkId);
                     }
                 }
             }
 
-            yield return timeBetweenChecks;
+            connectedUsers.Dispose();
+            spawnedWaygates.Dispose();
         }
     }
 
@@ -204,13 +210,14 @@ class WaygateService
     {
         const float DISTANCE_TO_DESTROY = 10f;
         var pos = senderCharacterEntity.Read<Translation>().Value;
-        var closestWaypoint = spawnedWaygates
+        var spawnedWaygates = spawnedWaypointQuery.ToEntityArray(Allocator.Temp);
+        var closestWaypoint = spawnedWaygates.ToArray()
             .OrderBy(x => math.distance(pos, x.Read<Translation>().Value))
             .FirstOrDefault(x => math.distance(pos, x.Read<Translation>().Value) < DISTANCE_TO_DESTROY);
+        spawnedWaygates.Dispose();
         if (closestWaypoint == Entity.Null) return false;
 
         DestroyUtility.Destroy(Core.EntityManager, closestWaypoint);
-        spawnedWaygates.Remove(closestWaypoint);
         return true;
     }
 }

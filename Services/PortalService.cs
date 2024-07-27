@@ -110,6 +110,7 @@ class PortalService
         var portalEntities = spawnedPortalQuery.ToEntityArray(Allocator.Temp);
         var pos = playerEntity.Read<Translation>().Value;
         var closestPortal = portalEntities.ToArray().OrderBy(x => math.distance(pos, x.Read<Translation>().Value)).FirstOrDefault();
+        portalEntities.Dispose();
         if (closestPortal == Entity.Null) return false;
 
         var portalPos = closestPortal.Read<Translation>().Value;

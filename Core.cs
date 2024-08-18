@@ -6,10 +6,17 @@ using ProjectM;
 using ProjectM.Physics;
 using ProjectM.Scripting;
 using ProjectM.Terrain;
+using Stunlock.Core;
 using Stunlock.Localization;
 using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Unity.Entities;
+using Unity.Mathematics;
+using Unity.Physics;
+using Unity.Transforms;
 using UnityEngine;
 
 namespace KindredPortals;
@@ -54,7 +61,7 @@ internal static class Core
 
         _hasInitialized = true;
 		Log.LogInfo($"KindredPortals initialized");
-	}
+    }
 	private static bool _hasInitialized = false;
 
 	private static World GetWorld(string name)

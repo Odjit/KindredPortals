@@ -44,12 +44,14 @@ class WaygateService
             Options = EntityQueryOptions.IncludeDisabled
         });
 
-        Core.StartCoroutine(CheckForWaypointUnlocks());
+        if(!Core.ServerGameSettingsSystem.Settings.AllWaypointsUnlocked)
+            Core.StartCoroutine(CheckForWaypointUnlocks());
     }
 
-    void InitializeUnlockedWaypoints(Entity userEntity)
+    List<NetworkId> InitializeUnlockedWaypoints(Entity userEntity)
     {
-        unlockedSpawnedWaypoints.Add(userEntity, []);
+        var unlockedUserSpawnedWaypoints = new List<NetworkId>();
+        unlockedSpawnedWaypoints.Add(userEntity, unlockedUserSpawnedWaypoints);
 
         var unlockedWaypoints = Core.EntityManager.GetBuffer<UnlockedWaypointElement>(userEntity);
         var spawnedWaypoints = spawnedWaypointQuery.ToEntityArray(Allocator.Temp);
@@ -60,20 +62,11 @@ class WaygateService
         {
             if (spawnedWaypointsArray.Any(x => x.Read<NetworkId>() == waypoint.Waypoint))
             {
-                unlockedSpawnedWaypoints[userEntity].Add(waypoint.Waypoint);
+                unlockedUserSpawnedWaypoints.Add(waypoint.Waypoint);
             }
         }
 
-        if (Core.ServerGameSettingsSystem.Settings.AllWaypointsUnlocked)
-        {
-            foreach (var waygate in spawnedWaypointsArray)
-            {
-                var networkId = waygate.Read<NetworkId>();
-                if (unlockedSpawnedWaypoints[userEntity].Contains(networkId)) continue;
-                unlockedSpawnedWaypoints[userEntity].Add(networkId);
-                unlockedWaypoints.Add(new() { Waypoint = networkId });
-            }
-        }
+        return unlockedUserSpawnedWaypoints;
     }
 
     public bool CreateWaygate(Entity character, PrefabGUID waypointPrefabGUID)
@@ -111,13 +104,6 @@ class WaygateService
         newWaypoint.Add<SpawnedBy>();
         newWaypoint.Write(new SpawnedBy { Value = character });
 
-        if (Core.ServerGameSettingsSystem.Settings.AllWaypointsUnlocked)
-        {
-            foreach(var userEntity in unlockedSpawnedWaypoints.Keys)
-            {
-                UnlockWaypoint(userEntity, newWaypoint.Read<NetworkId>());
-            }
-        }
         return true;
     }
 
@@ -140,9 +126,14 @@ class WaygateService
 
     public void UnlockWaypoint(Entity userEntity, NetworkId waypointNetworkId)
     {
+        if (waypointNetworkId == NetworkId.Empty)
+        {
+            Core.Log.LogError("Attempted to unlock an empty waypoint");
+            return;
+        }
         if (!unlockedSpawnedWaypoints.TryGetValue(userEntity, out var unlockedWaypoints))
         {
-            InitializeUnlockedWaypoints(userEntity);
+            unlockedWaypoints = InitializeUnlockedWaypoints(userEntity);
         }
         unlockedWaypoints.Add(waypointNetworkId);
 
@@ -153,6 +144,7 @@ class WaygateService
             if (unlockedWaypoint.Waypoint == waypointNetworkId) return;
         }
 
+        Core.Log.LogInfo($"Waypoint {waypointNetworkId} unlocked for {userEntity.Read<User>().CharacterName}");
         unlockedWaypointElements.Add(new() { Waypoint = waypointNetworkId });
     }
 
@@ -174,14 +166,9 @@ class WaygateService
             foreach (var userEntity in connectedUsers)
             {
                 var user = userEntity.Read<User>();
-                if (!unlockedSpawnedWaypoints.TryGetValue(userEntity, out var _))
+                if (!unlockedSpawnedWaypoints.TryGetValue(userEntity, out var unlockedWaypoints))
                 {
-                    InitializeUnlockedWaypoints(userEntity);
-                }
-
-                if (Core.ServerGameSettingsSystem.Settings.AllWaypointsUnlocked)
-                {
-                    continue;
+                    unlockedWaypoints = InitializeUnlockedWaypoints(userEntity);
                 }
                 
                 var characterEntity = user.LocalCharacter.GetEntityOnServer();
@@ -191,7 +178,7 @@ class WaygateService
                 foreach (var waygate in spawnedWaygates)
                 {
                     var waygateNetworkId = waygate.Read<NetworkId>();
-                    if (unlockedSpawnedWaypoints[userEntity].Contains(waygateNetworkId)) continue;
+                    if (unlockedWaypoints.Contains(waygateNetworkId)) continue;
 
                     var waypointPos = waygate.Read<Translation>().Value;
                     if (math.distance(pos, waypointPos) < UnlockDistance)

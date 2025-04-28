@@ -34,33 +34,50 @@ class FoundMapIconConverter : CommandArgumentConverter<FoundMapIcon>
         "WoodenCoffin"
     ];
 
+    static bool initialized = false;
     public static void Initialize()
     {
-        foreach(var (prefabGUID, name) in Core.PrefabCollection._PrefabGuidToNameDictionary)
+        foreach (var entry in Core.PrefabCollection._PrefabGuidToEntityMap)
         {
-            if (name.StartsWith("MapIcon_"))
+            var key = entry.Key;
+            if (Core.PrefabCollection._PrefabLookupMap.GuidToEntityMap.TryGetValue(key, out var prefab))
             {
-                if (excludedMapIcons.Contains(name[8..]))
-                    continue;
+                var name = Core.PrefabCollection._PrefabLookupMap.GetName(key);
+                if (name.StartsWith("MapIcon_"))
+                {
+                    if (excludedMapIcons.Contains(name[8..]))
+                        continue;
 
-                if (!Core.PrefabCollection._PrefabGuidToEntityMap.TryGetValue(prefabGUID, out var entity))
-                    continue;
+                    if (!prefab.Has<MapIconData>())
+                        continue;
 
-                if (!entity.Has<MapIconData>())
-                    continue;
-
-                _mapIconNameToGuid[name] = prefabGUID;
+                    _mapIconNameToGuid[name] = key;
+                }
             }
         }
+        initialized = true;
     }
 
-    public static IEnumerable<(string, PrefabGUID)> MapIconNames => _mapIconNameToGuid.Select(x => (x.Key, x.Value));
+    public static IEnumerable<(string, PrefabGUID)> MapIconNames => GetIconNames();
+
+
+
+    static IEnumerable<(string, PrefabGUID)> GetIconNames()
+    {
+        if (!initialized)
+            Initialize();
+
+        return _mapIconNameToGuid.Select(x => (x.Key, x.Value)).OrderBy(x => x.Key);
+    }
 
     public override FoundMapIcon Parse(ICommandContext ctx, string input)
     {
+        if (!initialized)
+            Initialize();
+
         if (int.TryParse(input, out var integral))
         {
-            if(!Core.PrefabCollection._PrefabGuidToNameDictionary.TryGetValue(new(integral), out var name))
+            if(!Core.PrefabCollection._PrefabLookupMap.TryGetName(new(integral), out var name))
                 throw ctx.Error($"Invalid prefabGUID: {input}");
 
             if(!name.StartsWith("MapIcon_"))

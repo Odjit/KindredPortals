@@ -15,11 +15,12 @@ class RegisterSpawnedChunkObjectsSystem_PersistenceLoadPatch
     static Dictionary<Entity, ChunkPortal> entityChunkPortals = [];
     public static void Prefix()
     {
-        var portalQuery = Core.EntityManager.CreateEntityQuery(new EntityQueryDesc()
-        {
-            All = new ComponentType[] { ComponentType.ReadOnly<ChunkPortal>() },
-            Options = EntityQueryOptions.IncludeDisabled
-        });
+        var portalQueryBuilder = new EntityQueryBuilder(Allocator.Temp);
+        portalQueryBuilder.AddAll(ComponentType.ReadOnly<ChunkPortal>());
+        portalQueryBuilder.WithOptions(EntityQueryOptions.IncludeDisabled);
+
+        var portalQuery = Core.EntityManager.CreateEntityQuery(ref portalQueryBuilder);
+        portalQueryBuilder.Dispose();
 
         var entities = portalQuery.ToEntityArray(Allocator.Temp);
         foreach (var entity in entities)

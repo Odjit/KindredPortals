@@ -23,28 +23,27 @@ class WaygateService
 
     public WaygateService()
     {
-        spawnedWaypointQuery = Core.EntityManager.CreateEntityQuery(new EntityQueryDesc()
-        {
-            All = new ComponentType[] {
-                ComponentType.ReadOnly<SpawnedBy>(),
-                ComponentType.ReadOnly<ChunkWaypoint>(),
-            },
-            Options = EntityQueryOptions.IncludeDisabled
-        });
+        var spawnedWaypointQueryBuilder = new EntityQueryBuilder(Allocator.Temp)
+            .AddAll(ComponentType.ReadOnly<ChunkWaypoint>())
+            .AddAll(ComponentType.ReadOnly<SpawnedBy>())
+            .WithOptions(EntityQueryOptions.IncludeDisabled);
+        spawnedWaypointQuery = Core.EntityManager.CreateEntityQuery(ref spawnedWaypointQueryBuilder);
+        spawnedWaypointQueryBuilder.Dispose();
 
-        connectedUserQuery = Core.EntityManager.CreateEntityQuery(new ComponentType[]
-        {
-            ComponentType.ReadOnly<IsConnected>(),
-            ComponentType.ReadOnly<User>()
-        });
+        var connectedUserQueryBuilder = new EntityQueryBuilder(Allocator.Temp)
+            .AddAll(ComponentType.ReadOnly<IsConnected>())
+            .AddAll(ComponentType.ReadOnly<User>());
 
-        waypointQuery = Core.EntityManager.CreateEntityQuery(new EntityQueryDesc()
-        {
-            All = new ComponentType[] { ComponentType.ReadOnly<ChunkWaypoint>() },
-            Options = EntityQueryOptions.IncludeDisabled
-        });
+        connectedUserQuery = Core.EntityManager.CreateEntityQuery(ref connectedUserQueryBuilder);
+        connectedUserQueryBuilder.Dispose();
 
-        if(!Core.ServerGameSettingsSystem.Settings.AllWaypointsUnlocked)
+        var waypointQueryBuilder = new EntityQueryBuilder(Allocator.Temp)
+            .AddAll(ComponentType.ReadOnly<ChunkWaypoint>())
+            .WithOptions(EntityQueryOptions.IncludeDisabled);
+        waypointQuery = Core.EntityManager.CreateEntityQuery(ref waypointQueryBuilder);
+        waypointQueryBuilder.Dispose();
+
+        if (!Core.ServerGameSettingsSystem.Settings.AllWaypointsUnlocked)
             Core.StartCoroutine(CheckForWaypointUnlocks());
     }
 

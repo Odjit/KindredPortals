@@ -18,19 +18,18 @@ class PortalService
 
     public PortalService()
     {
-        if(!Core.PrefabCollection._NameToPrefabGuidDictionary.TryGetValue("TM_General_Entrance_Gate", out var portalPrefabGUID))
+        if(!Core.PrefabCollection._SpawnableNameToPrefabGuidDictionary.TryGetValue("TM_General_Entrance_Gate", out var portalPrefabGUID))
             Core.Log.LogError("Failed to find TM_General_Entrance_Gate PrefabGUID");
         if(!Core.PrefabCollection._PrefabGuidToEntityMap.TryGetValue(portalPrefabGUID, out portalPrefab))
             Core.Log.LogError("Failed to find TM_General_Entrance_Gate Prefab entity");
 
-        spawnedPortalQuery = Core.EntityManager.CreateEntityQuery(new EntityQueryDesc()
-        {
-            All = new ComponentType[] {
-                ComponentType.ReadOnly<ChunkPortal>(),
-                ComponentType.ReadOnly<SpawnedBy>(),
-            },
-            Options = EntityQueryOptions.IncludeDisabled
-        });
+        var queryBuilder = new EntityQueryBuilder(Allocator.Temp)
+            .AddAll(ComponentType.ReadOnly<ChunkPortal>())
+            .AddAll(ComponentType.ReadOnly<SpawnedBy>())
+            .WithOptions(EntityQueryOptions.IncludeDisabled);
+
+        spawnedPortalQuery = Core.EntityManager.CreateEntityQuery(ref queryBuilder);
+        queryBuilder.Dispose();
     }
 
     public bool StartPortal(Entity playerEntity, PrefabGUID mapIcon)

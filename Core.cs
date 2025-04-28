@@ -53,7 +53,6 @@ internal static class Core
         ServerGameSettingsSystem = Server.GetExistingSystemManaged<ServerGameSettingsSystem>();
         ServerScriptMapper = Server.GetExistingSystemManaged<ServerScriptMapper>();
 
-        FoundMapIconConverter.Initialize();
         FoundWaygatePrefabConverter.Initialize();
 
         MapIconService = new();

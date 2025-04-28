@@ -16,24 +16,20 @@ class MapIconService
 
     public MapIconService()
     {
-        if (!Core.PrefabCollection._NameToPrefabGuidDictionary.TryGetValue("MapIcon_ProxyObject_POI_Unknown", out mapIconProxyPrefabGUID))
+        if (!Core.PrefabCollection._SpawnableNameToPrefabGuidDictionary.TryGetValue("MapIcon_ProxyObject_POI_Unknown", out mapIconProxyPrefabGUID))
             Core.Log.LogError("Failed to find MapIcon_ProxyObject_POI_Unknown PrefabGUID");
         if (!Core.PrefabCollection._PrefabGuidToEntityMap.TryGetValue(mapIconProxyPrefabGUID, out mapIconProxyPrefab))
             Core.Log.LogError("Failed to find MapIcon_ProxyObject_POI_Unknown Prefab entity");
 
-        mapIconProxyQuery = Core.EntityManager.CreateEntityQuery(new EntityQueryDesc()
-        {
-            All = new ComponentType[] {
-                ComponentType.ReadOnly<AttachMapIconsToEntity>(),
-                ComponentType.ReadOnly<SpawnedBy>(),
-            },
-            None = new ComponentType[]
-            {
-                ComponentType.ReadOnly<ChunkPortal>(),
-                ComponentType.ReadOnly<ChunkWaypoint>(),
-            },
-            Options = EntityQueryOptions.IncludeDisabled
-        });
+        var queryBuilder = new EntityQueryBuilder(Allocator.Temp)
+            .AddAll(ComponentType.ReadOnly<AttachMapIconsToEntity>())
+            .AddAll(ComponentType.ReadOnly<SpawnedBy>())
+            .AddNone(ComponentType.ReadOnly<ChunkPortal>())
+            .AddNone(ComponentType.ReadOnly<ChunkWaypoint>())
+            .WithOptions(EntityQueryOptions.IncludeDisabled);
+
+        mapIconProxyQuery = Core.EntityManager.CreateEntityQuery(ref queryBuilder);
+        queryBuilder.Dispose();
     }
 
     public void CreateMapIcon(Entity characterEntity, PrefabGUID mapIcon)

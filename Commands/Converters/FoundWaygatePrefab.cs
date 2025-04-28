@@ -16,10 +16,11 @@ class FoundWaygatePrefabConverter : CommandArgumentConverter<FoundWaygatePrefab>
 
     public static void Initialize()
     {
-        foreach (var (prefabGUID, name) in Core.PrefabCollection._PrefabGuidToNameDictionary)
+        foreach (var entry in Core.PrefabCollection._PrefabLookupMap.GuidToEntityMap)
         {
+            var name = Core.PrefabCollection._PrefabLookupMap.GetName(entry.Key);
             if (name.StartsWith("TM_Workstation_Waypoint_World"))
-                _waygateToGuid[name] = prefabGUID;
+                _waygateToGuid[name] = entry.Key;
         }
     }
 
@@ -27,7 +28,7 @@ class FoundWaygatePrefabConverter : CommandArgumentConverter<FoundWaygatePrefab>
     {
         if (int.TryParse(input, out var integral))
         {
-            if (!Core.PrefabCollection._PrefabGuidToNameDictionary.TryGetValue(new(integral), out var name))
+            if (!Core.PrefabCollection._PrefabLookupMap.TryGetName(new(integral), out var name))
                 throw ctx.Error($"Invalid prefabGUID: {input}");
 
             if (!name.StartsWith("TM_Workstation_Waypoint_World"))

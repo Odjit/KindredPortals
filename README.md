@@ -1,6 +1,8 @@
 ![](logo.png)
 # KindredPortals for V Rising
 KindredPortals is a fast travel mod for V Rising. It allows you to create portals to travel between locations.
+   - **Note:** Until BepInEx is updated for 1.1, please do not use the thunderstore version. Get the correct testing version https://wiki.vrisingmods.com/user/game_update.html.
+
 
 - Portal Travel: Functions like caves but not attached to anything unless you make them! Assign mapicons to them or don't! Use [KindredSchematics](https://thunderstore.io/c/v-rising/p/odjit/KindredSchematics/) to place tilemodels at their location for extra pizzazz.
 - Waygates: Create new waygates on the map! Accessible by all players via the map, but must be "discovered" first by getting close to them. (Unless unlock all waygates is on)
